@@ -17,13 +17,12 @@ jobs:
         run: |
           if [ -f jaar-jary-app.zip ]; then
             unzip -o jaar-jary-app.zip -d extracted
-            shopt -s dotglob
+            SRC="extracted"
             if [ "$(ls extracted | wc -l)" -eq 1 ] && [ -d "extracted/$(ls extracted)" ]; then
-              mv extracted/*/* .
-            else
-              mv extracted/* .
+              SRC="extracted/$(ls extracted)"
             fi
-            shopt -u dotglob
+            cp -rf "$SRC"/. .
+            rm -rf extracted
           fi
 
       - name: Setup Node.js
