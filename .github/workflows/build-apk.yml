@@ -51,6 +51,11 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      - name: Generate app icons
+        run: |
+          npm install -g cordova-res
+          cordova-res android --skip-config --copy-to android/app/src/main/res --icon-source www/icon.png
+
       - name: Patch AndroidManifest for AdMob
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
