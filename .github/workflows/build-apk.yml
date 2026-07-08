@@ -55,12 +55,12 @@ jobs:
         run: |
           npm install -g cordova-res
           cordova-res android --skip-config --copy-to android/app/src/main/res --icon-source www/icon.png --type icon
-      - name: Patch AndroidManifest for AdMob
+      - name: Patch AndroidManifest for AdMob and Location
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           sed -i 's|<application|<application\n        android:usesCleartextTraffic="true"|' "$MANIFEST"
           sed -i 's|</application>|    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-5606142224218961~5473179910"/>\n    </application>|' "$MANIFEST"
-
+          sed -i 's|<application|<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n    <application|' "$MANIFEST"
       - name: Sync Capacitor
         run: npx cap sync android
 
