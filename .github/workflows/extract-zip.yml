@@ -1,0 +1,38 @@
+name: Extract Zip to Repo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Unzip project
+        run: |
+          if [ -f jaar-jary-app.zip ]; then
+            unzip -o jaar-jary-app.zip -d extracted
+            SRC="extracted"
+            if [ "$(ls extracted | wc -l)" -eq 1 ] && [ -d "extracted/$(ls extracted)" ]; then
+              SRC="extracted/$(ls extracted)"
+            fi
+            cp -rf "$SRC"/. .
+            rm -rf extracted
+            rm -f jaar-jary-app.zip
+          else
+            echo "لا يوجد ملف zip"
+            exit 0
+          fi
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "فك ضغط الملفات تلقائيًا"
+          git push
